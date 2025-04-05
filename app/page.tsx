@@ -1,4 +1,3 @@
-"use client";
 import ClipesList from "@/components/clipes-list/clipes-list";
 import { Header } from "@/components/header/header";
 import { Separator } from "@/components/ui/separator";
@@ -8,7 +7,7 @@ export default function Home() {
   const LINK_SERVER =
     "https://discord.com/channels/818529146635681793/1145570523330379917";
   return (
-    <div>
+    <div className="antialiased mx-12 py-6">
       <Header />
       <main>
         <section>

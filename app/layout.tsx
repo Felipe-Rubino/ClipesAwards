@@ -27,9 +27,7 @@ export default function RootLayout({
 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased mx-12 py-6`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} `}>
         <ThemeProvider
           attribute="class"
           defaultTheme={defaultTheme}
