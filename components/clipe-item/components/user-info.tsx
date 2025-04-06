@@ -1,5 +1,7 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export type UserInfoProps = {
   user: {
@@ -11,6 +13,14 @@ export type UserInfoProps = {
 
 async function UserInfo({ user }: UserInfoProps) {
   const { name, avatar_url, clip_posted_at } = user;
+
+  const date = new Date(clip_posted_at);
+  const formattedDate = formatDistanceToNow(date, {
+    addSuffix: true,
+    locale: ptBR,
+    includeSeconds: true,
+  });
+
   return (
     <div className="flex items-center gap-2.5 mb-4">
       <Avatar>
@@ -19,7 +29,7 @@ async function UserInfo({ user }: UserInfoProps) {
 
       <div className="text-sm flex flex-col items-start flex-nowrap">
         <span className="font-semibold leading-4">{name}</span>
-        <span className="text-gray-500">{clip_posted_at}</span>
+        <span className="text-gray-500">{formattedDate}</span>
       </div>
     </div>
   );

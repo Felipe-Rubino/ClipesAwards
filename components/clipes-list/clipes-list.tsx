@@ -1,6 +1,4 @@
 import ClipeItem from "../clipe-item/clipe-item";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
 
 export default async function ClipesList() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -11,26 +9,15 @@ export default async function ClipesList() {
     fetch("https://api.github.com/users/arawns1"),
   ]);
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch video URL");
-  }
-
   const videoSrc = response.url;
 
   const user = await data.json();
   const { name, avatar_url, updated_at } = user;
 
-  const date = new Date(updated_at);
-  const formattedDate = formatDistanceToNow(date, {
-    addSuffix: true,
-    locale: ptBR,
-    includeSeconds: true,
-  });
-
   const userInfoData = {
     name,
     avatar_url,
-    clip_posted_at: formattedDate,
+    clip_posted_at: updated_at,
   };
 
   return (
