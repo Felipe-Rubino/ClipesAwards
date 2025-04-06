@@ -1,11 +1,15 @@
+"use client";
+
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFetchVideoURL } from "@/hooks/useFetchVideoURL";
 
 export type VideoComponentProps = {
-  src: string | null;
+  src: string;
 };
 
 function VideoComponent({ src }: VideoComponentProps) {
-  if (!src) return <VideoSkeleton />;
+  const resolvedSrc = useFetchVideoURL(src);
+  if (!resolvedSrc) return <VideoComponentSkeleton />;
 
   return (
     <div
@@ -13,14 +17,14 @@ function VideoComponent({ src }: VideoComponentProps) {
       style={{ position: "relative", paddingBottom: "56.25%" }}
     >
       <iframe
-        src={src}
+        src={resolvedSrc}
         className="absolute top-0 left-0 w-full h-full rounded-md"
       />
     </div>
   );
 }
 
-function VideoSkeleton() {
+function VideoComponentSkeleton() {
   return <Skeleton className="w-full h-[180px]" />;
 }
-export { VideoSkeleton, VideoComponent };
+export { VideoComponentSkeleton, VideoComponent };
