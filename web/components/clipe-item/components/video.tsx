@@ -1,10 +1,12 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
 export type VideoComponentProps = {
-  src: string;
+  src: string | null;
 };
 
-async function VideoComponent({ src }: VideoComponentProps) {
+function VideoComponent({ src }: VideoComponentProps) {
+  if (!src) return <VideoSkeleton />;
+
   return (
     <div
       className="w-full rounded-md relative"
@@ -21,5 +23,4 @@ async function VideoComponent({ src }: VideoComponentProps) {
 function VideoSkeleton() {
   return <Skeleton className="w-full h-[180px]" />;
 }
-
-export { VideoComponent, VideoSkeleton };
+export { VideoSkeleton, VideoComponent };

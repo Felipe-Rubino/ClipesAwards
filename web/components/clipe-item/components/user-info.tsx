@@ -11,15 +11,19 @@ export type UserInfoProps = {
   };
 };
 
-async function UserInfo({ user }: UserInfoProps) {
+function UserInfo({ user }: UserInfoProps) {
+  if (!user) return <UserInfoSkeleton />;
   const { name, avatar_url, clip_posted_at } = user;
 
-  const date = new Date(clip_posted_at);
-  const formattedDate = formatDistanceToNow(date, {
-    addSuffix: true,
-    locale: ptBR,
-    includeSeconds: true,
-  });
+  let formattedDate = clip_posted_at;
+  if (clip_posted_at) {
+    const date = new Date(clip_posted_at);
+    formattedDate = formatDistanceToNow(date, {
+      addSuffix: true,
+      locale: ptBR,
+      includeSeconds: true,
+    });
+  }
 
   return (
     <div className="flex items-center gap-2.5 mb-4">
@@ -28,7 +32,7 @@ async function UserInfo({ user }: UserInfoProps) {
       </Avatar>
 
       <div className="text-sm flex flex-col items-start flex-nowrap">
-        <span className="font-semibold leading-4">{name}</span>
+        <span className="font-semibold leading-4 capitalize">{name}</span>
         <span className="text-gray-500">{formattedDate}</span>
       </div>
     </div>
