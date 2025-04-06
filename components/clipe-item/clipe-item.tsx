@@ -21,7 +21,7 @@ export default async function ClipeItem({
   const videoSrc = src;
 
   return (
-    <div className="rounded-lg border p-4">
+    <div className="rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border">
       <Suspense fallback={<UserInfoSkeleton />}>
         <UserInfo user={userInfoData} />
       </Suspense>
