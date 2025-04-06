@@ -1,7 +1,17 @@
 import ClipeItem from "../clipe-item/clipe-item";
 
 export default async function ClipesList() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  let baseUrl = "http://localhost:3000";
+
+  if (process.env.VERCEL_ENV === "preview") {
+    baseUrl = `https://${process.env.VERCEL_BRANCH_URL}`;
+  } else if (
+    process.env.VERCEL_ENV === "production" ||
+    process.env.VERCEL_ENV === "development"
+  ) {
+    baseUrl = `https://${process.env.VERCEL_URL}`;
+  }
+
   const [response, data] = await Promise.all([
     fetch(
       `${baseUrl}/api/proxy?url=https://cdn.discordapp.com/attachments/1145570523330379917/1358101550265794880/clipe.mp4?ex=67f29e21%26is=67f14ca1%26hm=6d8c26205295c7fcd04aca932fbd008fec5ee08ea89627bebd43e7ee73627fb1%26`,
