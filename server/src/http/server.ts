@@ -1,11 +1,10 @@
 import fastify from "fastify";
+import routes from "./routes";
 
 const app = fastify();
 
-app.get("/", (request, response) => {
-  return response.status(200).send({ message: "Hello, world!" });
-});
+app.register(routes, { prefix: "/api" });
 
-app.listen({ port: 3333 }).then(() => {
+app.listen({ port: 3000 }).then(() => {
   console.log("🚀 HTTP server running!");
 });
