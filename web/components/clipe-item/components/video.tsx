@@ -1,33 +1,40 @@
 "use client";
+
+import React, { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import React from "react";
 
 export type VideoComponentProps = {
   src: string;
 };
 
 function VideoComponent({ src }: VideoComponentProps) {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
-    <div
-      className="w-full rounded-md relative"
-      style={{ position: "relative", paddingBottom: "56.25%" }}
-    >
+    <div className="w-full rounded-md relative overflow-hidden aspect-video">
+      {isLoading && <VideoComponentSkeleton />}
+
       <iframe
-        className="absolute top-0 left-0 w-full h-full rounded-md"
+        className={`absolute top-0 left-0 w-full h-full rounded-md transition-opacity duration-300 ${
+          isLoading ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
         src={src}
+        onLoad={() => setIsLoading(false)}
         allow="picture-in-picture"
+        loading="lazy"
         allowFullScreen
-        marginWidth={0}
-        marginHeight={0}
-        scrolling="No"
-        frameBorder="0"
-      ></iframe>
+      />
     </div>
   );
 }
 
-function VideoComponentSkeleton() {
-  return <Skeleton className="w-full h-[180px]" />;
+function VideoComponentSkeleton(props: React.ComponentProps<"div">) {
+  return (
+    <Skeleton
+      {...props}
+      className={`w-full h-full absolute top-0 left-0 ${props.className ?? ""}`}
+    />
+  );
 }
 
-export { VideoComponentSkeleton, VideoComponent };
+export { VideoComponent, VideoComponentSkeleton };
