@@ -1,25 +1,28 @@
+import { User } from "@/@types/Clipe";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export type UserInfoProps = {
-  user: {
-    name: string;
-    avatar_url: string;
-    clip_posted_at: string;
-  };
+  user: User;
+  posted_at: string;
 };
 
-async function UserInfo({ user }: UserInfoProps) {
-  const { name, avatar_url, clip_posted_at } = user;
+function UserInfo(props: UserInfoProps) {
+  if (!props.user || !props.posted_at) return <UserInfoSkeleton />;
+  const { name, avatar_url } = props.user;
+  const { posted_at } = props;
 
-  const date = new Date(clip_posted_at);
-  const formattedDate = formatDistanceToNow(date, {
-    addSuffix: true,
-    locale: ptBR,
-    includeSeconds: true,
-  });
+  let formattedDate = posted_at;
+  if (posted_at) {
+    const date = new Date(posted_at);
+    formattedDate = formatDistanceToNow(date, {
+      addSuffix: true,
+      locale: ptBR,
+      includeSeconds: true,
+    });
+  }
 
   return (
     <div className="flex items-center gap-2.5 mb-4">
@@ -28,7 +31,7 @@ async function UserInfo({ user }: UserInfoProps) {
       </Avatar>
 
       <div className="text-sm flex flex-col items-start flex-nowrap">
-        <span className="font-semibold leading-4">{name}</span>
+        <span className="font-semibold leading-4 capitalize">{name}</span>
         <span className="text-gray-500">{formattedDate}</span>
       </div>
     </div>

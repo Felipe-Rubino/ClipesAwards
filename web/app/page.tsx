@@ -1,11 +1,18 @@
-import ClipesList from "@/components/clipes-list/clipes-list";
+"use client";
+import {
+  ClipesList,
+  ClipesListSkeleton,
+} from "@/components/clipes-list/clipes-list";
 import { Header } from "@/components/header/header";
 import { Separator } from "@/components/ui/separator";
+import { useFetchAllClipes } from "@/hooks/useFetchAllClipes";
 import Link from "next/link";
 
 export default function Home() {
   const LINK_SERVER =
     "https://discord.com/channels/818529146635681793/1145570523330379917";
+  const clipesData = useFetchAllClipes();
+
   return (
     <div className="antialiased mx-12 py-6">
       <Header />
@@ -29,7 +36,11 @@ export default function Home() {
             <Separator className="my-4" />
           </div>
 
-          <ClipesList />
+          {clipesData ? (
+            <ClipesList data={clipesData} />
+          ) : (
+            <ClipesListSkeleton />
+          )}
         </section>
       </main>
     </div>
