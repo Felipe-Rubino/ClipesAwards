@@ -30,3 +30,10 @@ if (!process.env.DISCORD_GUILD_ID)
     "Variável de ambiente DISCORD_GUILD_ID não definida ou não encontrada",
   );
 export const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID;
+
+export const PORT = parseInt(process.env.PORT || "3100", 10);
+export const HOST = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
+export const BASE_URL =
+  "RENDER_EXTERNAL_URL" in process.env
+    ? process.env.RENDER_EXTERNAL_URL
+    : `http://${HOST}:${PORT}`;
