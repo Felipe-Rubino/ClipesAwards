@@ -1,6 +1,8 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
 import routes from "./routes";
+const port = parseInt(process.env.PORT || "3000", 10);
+const host = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
 
 export const startServer = async () => {
   const app = fastify();
@@ -10,8 +12,8 @@ export const startServer = async () => {
   });
 
   try {
-    app.listen({ port: 3100 }).then(() => {
-      console.log("🚀 HTTP server running on http://localhost:3100/api");
+    app.listen({ port: port, host: host }).then(() => {
+      console.log(`🚀 HTTP server running on http://${host}:${port}/api`);
     });
   } catch (err) {
     console.error("Erro ao iniciar o servidor Fastify", err);
