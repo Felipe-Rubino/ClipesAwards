@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import { User } from "@/@types/Clipe";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import dateFormatter from "@/lib/date";
 
 export type UserInfoProps = {
   user: User;
@@ -19,12 +18,7 @@ function UserInfo({ user, posted_at }: UserInfoProps) {
   useEffect(() => {
     if (user && posted_at) {
       const date = new Date(posted_at);
-      const formatted = formatDistanceToNow(date, {
-        addSuffix: true,
-        locale: ptBR,
-        includeSeconds: true,
-      });
-
+      const formatted = dateFormatter(date);
       setFormattedDate(formatted);
       const img = new Image();
       img.onload = () => setIsLoading(false);
@@ -44,7 +38,7 @@ function UserInfo({ user, posted_at }: UserInfoProps) {
       </Avatar>
 
       <div className="text-sm flex flex-col items-start flex-nowrap">
-        <span className="font-semibold leading-4 capitalize">{user.name}</span>
+        <span className="font-semibold leading-5 capitalize">{user.name}</span>
         <span className="text-gray-500">{formattedDate}</span>
       </div>
     </div>
