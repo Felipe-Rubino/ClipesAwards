@@ -1,6 +1,3 @@
-"use client";
-
-import { Clipe } from "@/@types/Clipe";
 import ClipeItem from "../clipe-item/clipe-item";
 import {
   UserInfo,
@@ -9,12 +6,11 @@ import {
   VotesComponent,
 } from "../clipe-item/components";
 import { VideoComponentSkeleton } from "../clipe-item/components/video";
+import getAllClips from "./getAllClips";
 
-type ClipesListProps = {
-  data: Clipe[];
-};
+export async function ClipesList() {
+  const clipes = await getAllClips();
 
-export function ClipesList({ data: clipes }: ClipesListProps) {
   return (
     <section className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
       {clipes.map((clipe, index) => {

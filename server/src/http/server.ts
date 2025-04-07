@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
 import routes from "./routes";
-const port = parseInt(process.env.PORT || "3000", 10);
+const port = parseInt(process.env.PORT || "3100", 10);
 const host = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
 
 export const startServer = async () => {

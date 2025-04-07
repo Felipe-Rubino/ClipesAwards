@@ -6,50 +6,42 @@ type GetDiscordVideoRequest = FastifyRequest<{
 
 export async function getDiscordVideo(app: FastifyInstance) {
   app.get("/proxy", async (req: GetDiscordVideoRequest, res: FastifyReply) => {
-    console.group("[getDiscordVideo]");
-    console.log(`[INFO] Requisição recebida`);
-
     const { url: rawUrl } = req.query;
-    console.info(`[INFO] URL parâmetro: ${rawUrl}`);
-
     if (!rawUrl) {
-      console.error("[ERROR] Query parameter 'URL' não foi enviado");
       return res.code(400).send({ error: "Missing URL parameter" });
     }
 
     try {
       const url = decodeURIComponent(rawUrl);
-      console.info("[INFO] Realizando requisição com a URL: ", url);
+      const range = req.headers.range;
+      const headers: Record<string, string> = {
+        ...(range ? { Range: range } : {}),
+      };
 
-      const response = await fetch(url);
+      const response = await fetch(url, { headers });
 
       if (!response.ok || !response.body) {
-        console.error(
-          `[ERROR] Erro ao realizar requisição: `,
-          response.statusText,
-        );
         return res.code(500).send({ error: "Failed to fetch target URL" });
       }
 
       const contentType =
         response.headers.get("content-type") || "application/octet-stream";
+      const contentLength = response.headers.get("content-length");
+      const acceptRanges = response.headers.get("accept-ranges");
+      const contentRange = response.headers.get("content-range");
 
-      console.info(`[INFO] Requisição concluída com sucesso!`);
-      return res
-        .code(200)
-        .headers({
-          "Content-Type": contentType,
-          "Content-Disposition": "inline",
-        })
-        .send(response.body);
+      res.code(response.status).headers({
+        "Content-Type": contentType,
+        ...(contentLength ? { "Content-Length": contentLength } : {}),
+        ...(acceptRanges ? { "Accept-Ranges": acceptRanges } : {}),
+        ...(contentRange ? { "Content-Range": contentRange } : {}),
+        "Content-Disposition": "inline",
+      });
+      return res.send(response.body);
     } catch (err) {
-      console.error("[ERROR] Erro interno: ", err);
       return res
         .code(500)
         .send({ error: "Erro interno. Tente novamente mais tarde" });
-    } finally {
-      console.info(`[INFO] Requisição finalizada`);
-      console.groupEnd();
     }
   });
 }
