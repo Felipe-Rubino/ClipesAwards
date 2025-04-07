@@ -21,6 +21,7 @@ export const useFetchAllClipes = (): Clipe[] | null => {
         }
 
         const data = await response.json();
+        console.log(data);
         setClipes(data);
       } catch (error) {
         console.error("Erro ao buscar clipes:", error);

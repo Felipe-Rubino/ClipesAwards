@@ -1,23 +1,22 @@
+import { User } from "@/@types/Clipe";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export type UserInfoProps = {
-  user: {
-    name: string;
-    avatar_url: string;
-    clip_posted_at: string;
-  };
+  user: User;
+  posted_at: string;
 };
 
-function UserInfo({ user }: UserInfoProps) {
-  if (!user) return <UserInfoSkeleton />;
-  const { name, avatar_url, clip_posted_at } = user;
+function UserInfo(props: UserInfoProps) {
+  if (!props.user || !props.posted_at) return <UserInfoSkeleton />;
+  const { name, avatar_url } = props.user;
+  const { posted_at } = props;
 
-  let formattedDate = clip_posted_at;
-  if (clip_posted_at) {
-    const date = new Date(clip_posted_at);
+  let formattedDate = posted_at;
+  if (posted_at) {
+    const date = new Date(posted_at);
     formattedDate = formatDistanceToNow(date, {
       addSuffix: true,
       locale: ptBR,

@@ -17,11 +17,11 @@ type ClipesListProps = {
 export function ClipesList({ data: clipes }: ClipesListProps) {
   return (
     <section className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
-      {clipes.map((clipe) => {
+      {clipes.map((clipe, index) => {
         return (
-          <ClipeItem key={clipe.messageId}>
-            <UserInfo user={clipe.usuario} />
-            <VideoComponent src={clipe.videoSrc} />
+          <ClipeItem key={index}>
+            <UserInfo user={clipe.user} posted_at={clipe.posted_at} />
+            <VideoComponent src={clipe.video_src} />
             <VotesComponent />
           </ClipeItem>
         );

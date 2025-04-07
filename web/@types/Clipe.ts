@@ -1,9 +1,11 @@
 export type Clipe = {
-  messageId: string;
-  videoSrc: string;
-  usuario: {
-    name: string;
-    avatar_url: string;
-    clip_posted_at: string;
-  };
+  clip_id: string;
+  video_src: string;
+  posted_at: string;
+  user: User;
+};
+
+export type User = {
+  name: string;
+  avatar_url: string;
 };
