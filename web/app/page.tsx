@@ -1,18 +1,15 @@
-"use client";
 import {
   ClipesList,
   ClipesListSkeleton,
 } from "@/components/clipes-list/clipes-list";
 import { Header } from "@/components/header/header";
 import { Separator } from "@/components/ui/separator";
-import { useFetchAllClipes } from "@/hooks/useFetchAllClipes";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function Home() {
   const LINK_SERVER =
     "https://discord.com/channels/818529146635681793/1145570523330379917";
-  const clipesData = useFetchAllClipes();
-
   return (
     <div className="antialiased mx-12 py-6">
       <Header />
@@ -35,12 +32,9 @@ export default function Home() {
             </p>
             <Separator className="my-4" />
           </div>
-
-          {clipesData ? (
-            <ClipesList data={clipesData} />
-          ) : (
-            <ClipesListSkeleton />
-          )}
+          <Suspense fallback={<ClipesListSkeleton />}>
+            <ClipesList />
+          </Suspense>
         </section>
       </main>
     </div>
