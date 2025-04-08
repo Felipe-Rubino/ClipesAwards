@@ -1,9 +1,9 @@
 import { Clipe } from "@/@types/Clipe";
-import { BASE_URL } from "@/lib/constants";
+import { env } from "@/env";
 
 export default async function getAllClips(): Promise<Clipe[]> {
   try {
-    const fetchURL = new URL("/api/clips", BASE_URL);
+    const fetchURL = new URL("/api/clips", env.NEXT_PUBLIC_BASE_API_URL);
 
     const response = await fetch(fetchURL);
 
