@@ -14,16 +14,18 @@ function VideoComponent({ src }: VideoComponentProps) {
     <div className="w-full rounded-md relative overflow-hidden aspect-video">
       {isLoading && <VideoComponentSkeleton />}
 
-      <iframe
+      <video
+        key={src}
+        preload="metadata"
+        controls
+        controlsList="nodownload"
         className={`absolute top-0 left-0 w-full h-full rounded-md transition-opacity duration-300 ${
           isLoading ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
-        src={src}
-        onLoad={() => setIsLoading(false)}
-        allow="picture-in-picture"
-        loading="lazy"
-        allowFullScreen
-      />
+        onLoadedMetadata={() => setIsLoading(false)}
+      >
+        <source src={src} />
+      </video>
     </div>
   );
 }
