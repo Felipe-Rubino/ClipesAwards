@@ -1,6 +1,5 @@
 import { Attachment, Message } from "discord.js";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { BASE_URL } from "src/constants";
 import { getMessagesFromClipsChannel } from "src/ws/get-all-clips";
 
 export async function getAllClips(app: FastifyInstance) {
@@ -9,7 +8,7 @@ export async function getAllClips(app: FastifyInstance) {
     console.log(`[INFO] Requisição recebida`);
     try {
       const messages = await getMessagesFromClipsChannel();
-      const clips = messages.map((message) => mapMessageToClips(message, req));
+      const clips = messages.map((message) => mapMessageToClips(message));
 
       return res.code(200).send(clips);
     } catch (err) {
@@ -33,16 +32,10 @@ function mapMessageToClips(message: MessageWithAttachment) {
   return {
     clip_id: attachment.id,
     posted_at: new Date(createdTimestamp).toISOString(),
-    video_src: generateProxyVideoURL(attachment.url),
+    video_src: attachment.url,
     user: {
       name: author.globalName,
       avatar_url: author.avatarURL(),
     },
   };
-}
-
-function generateProxyVideoURL(rawVideoURL: string) {
-  const encodedAttachmentUrl = encodeURIComponent(rawVideoURL);
-  const proxyUrl = `${BASE_URL}/api/proxy?url=${encodedAttachmentUrl}`;
-  return proxyUrl;
 }
