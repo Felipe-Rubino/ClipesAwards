@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
-import { helloWorld } from "./hello-world";
 import { getAllClips } from "./get-all-clips";
+import { ping } from "./ping";
 
 export default async function routes(app: FastifyInstance) {
-  app.register(helloWorld);
+  app.register(ping);
   app.register(getAllClips);
 }

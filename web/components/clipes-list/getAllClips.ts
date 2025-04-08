@@ -1,10 +1,7 @@
 import { Clipe } from "@/@types/Clipe";
+import { BASE_URL } from "@/lib/constants";
 
 export default async function getAllClips(): Promise<Clipe[]> {
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
-  if (!BASE_URL) {
-    console.error("baseUrl needs to be defined");
-  }
   try {
     const fetchURL = new URL("/api/clips", BASE_URL);
 
