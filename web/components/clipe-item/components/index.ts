@@ -1,6 +1,6 @@
 import { UserInfo, UserInfoSkeleton } from "./user-info";
 import { VideoComponent, VideoComponentSkeleton } from "./video";
-import VotesComponent from "./votes";
+import { VotesComponent } from "./votes";
 
 export {
   UserInfo,

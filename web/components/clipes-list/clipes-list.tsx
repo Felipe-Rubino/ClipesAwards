@@ -1,3 +1,4 @@
+import { votesComponentFlag } from "@/app/flags";
 import ClipeItem from "../clipe-item/clipe-item";
 import {
   UserInfo,
@@ -10,6 +11,7 @@ import getAllClips from "./getAllClips";
 
 export async function ClipesList() {
   const clipes = await getAllClips();
+  const showVotesComponent = await votesComponentFlag();
 
   return (
     <section className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
@@ -18,7 +20,7 @@ export async function ClipesList() {
           <ClipeItem key={index}>
             <UserInfo user={clipe.user} posted_at={clipe.posted_at} />
             <VideoComponent src={clipe.video_src} />
-            <VotesComponent />
+            {showVotesComponent && <VotesComponent />}
           </ClipeItem>
         );
       })}
