@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { VercelToolbar } from "@vercel/toolbar/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const defaultTheme = "dark";
+  const shouldInjectToolbar = process.env.NODE_ENV === "development";
 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
@@ -34,6 +36,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          {shouldInjectToolbar && <VercelToolbar />}
         </ThemeProvider>
       </body>
     </html>

@@ -11,15 +11,21 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Separator } from "../ui/separator";
+import packageJson from "../../package.json";
 
 export function Header() {
   return (
     <div>
       <NavigationMenu>
-        <div className="flex items-center space-x-2 mr-2">
-          <h1 className="text-2xl font-extralight tracking-wider">
-            Clipe Awards
-          </h1>
+        <div className="flex items-center space-x-2 ">
+          <div className="flex items-start">
+            <h1 className="text-2xl font-extralight tracking-wider">
+              Clipe Awards
+            </h1>
+            <span className="text-muted-foreground text-xs">
+              v{packageJson.version}
+            </span>
+          </div>
           <Separator orientation="vertical" />
         </div>
         <NavigationMenuList>

@@ -6,7 +6,7 @@ import CommentsComponent from "./comments";
 
 type VoteType = "upvote" | "downvote";
 
-export default function VotesComponent() {
+function VotesComponent() {
   const [votes, setVotes] = useState(0);
   const [value, setValue] = useState("");
 
@@ -50,3 +50,5 @@ export default function VotesComponent() {
     </div>
   );
 }
+
+export { VotesComponent };
