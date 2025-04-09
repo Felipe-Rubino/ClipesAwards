@@ -2,15 +2,36 @@ import { Attachment, Message } from "discord.js";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getMessagesFromClipsChannel } from "src/ws/get-all-clips";
 
+type GetAllClipsRequest = FastifyRequest<{
+  Querystring: { cursor?: string };
+}>;
+
 export async function getAllClips(app: FastifyInstance) {
-  app.get("/clips", async (req: FastifyRequest, res: FastifyReply) => {
+  app.get("/clips", async (req: GetAllClipsRequest, res: FastifyReply) => {
     console.group("[getAllClips]");
     console.log(`[INFO] Requisição recebida`);
     try {
-      const messages = await getMessagesFromClipsChannel();
+      const { cursor } = req.query;
+      console.log(cursor);
+
+      const messages = await getMessagesFromClipsChannel(6, cursor);
       const clips = messages.map((message) => mapMessageToClips(message));
 
-      return res.code(200).send(clips);
+      if (cursor && clips.length > 0 && clips[0].message_id === cursor) {
+        clips.shift();
+      }
+
+      let nextCursor = null;
+      if (clips.length > 0) {
+        nextCursor = clips[clips.length - 1].message_id;
+      }
+
+      const responseBody = {
+        nextCursor,
+        data: clips,
+      };
+
+      return res.code(200).send(responseBody);
     } catch (err) {
       console.error("[ERROR] Erro interno: ", err);
       return res
@@ -27,7 +48,7 @@ type MessageWithAttachment = Message & {
   attachment: Attachment;
 };
 function mapMessageToClips(message: MessageWithAttachment) {
-  const { createdTimestamp, author, attachment } = message;
+  const { createdTimestamp, author, attachment, id } = message;
 
   return {
     clip_id: attachment.id,
@@ -37,5 +58,6 @@ function mapMessageToClips(message: MessageWithAttachment) {
       name: author.globalName,
       avatar_url: author.avatarURL(),
     },
+    message_id: id,
   };
 }

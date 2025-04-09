@@ -1,3 +1,8 @@
+export type ClipeDTO = {
+  nextCursor: string;
+  data: Clipe[];
+};
+
 export type Clipe = {
   clip_id: string;
   video_src: string;
