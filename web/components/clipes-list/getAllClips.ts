@@ -7,9 +7,7 @@ export default async function getAllClips(): Promise<Clipe[]> {
   }
   try {
     const fetchURL = new URL("/api/clips", BASE_URL);
-
     const response = await fetch(fetchURL);
-
     if (!response.ok) {
       throw new Error(`Erro ao buscar clipes: ${response.statusText}`);
     }
