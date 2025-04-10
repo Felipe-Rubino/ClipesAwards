@@ -58,9 +58,10 @@ export async function getMessagesFromClipsChannel(
       if (collectedMessages.length >= fetchSize) break;
 
       const createdAt = new Date(msg.createdTimestamp);
-      const isInPeriod =
-        createdAt >= startDateFilter && createdAt <= endDateFilter;
-      if (!isInPeriod || msg.attachments.size === 0) continue;
+      // const isInPeriod =
+      //   createdAt >= startDateFilter && createdAt <= endDateFilter;
+      // if (!isInPeriod || msg.attachments.size === 0) continue;
+      if (msg.attachments.size === 0) continue;
 
       const hasVideo = msg.attachments.some((att: Attachment) =>
         att.contentType?.startsWith("video/"),
