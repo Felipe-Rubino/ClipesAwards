@@ -6,7 +6,6 @@ import {
   UserInfo,
   UserInfoSkeleton,
   VideoComponent,
-  VotesComponent,
 } from "../clipe-item/components";
 import { VideoComponentSkeleton } from "../clipe-item/components/video";
 
