@@ -2,6 +2,7 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
 import { useState } from "react";
+import CommentsComponent from "./comments";
 
 type VoteType = "upvote" | "downvote";
 
@@ -45,6 +46,7 @@ function VotesComponent() {
           <ArrowDown className="h-4 w-4" />
         </ToggleGroupItem>
       </ToggleGroup>
+      <CommentsComponent />
     </div>
   );
 }
