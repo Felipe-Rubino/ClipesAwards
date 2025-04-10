@@ -34,7 +34,7 @@ function VideoComponentSkeleton(props: React.ComponentProps<"div">) {
   return (
     <Skeleton
       {...props}
-      className={`w-full h-full absolute top-0 left-0 ${props.className ?? ""}`}
+      className={`w-full aspect-video ${props.className ?? ""}`}
     />
   );
 }
