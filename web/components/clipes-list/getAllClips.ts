@@ -9,5 +9,10 @@ export default async function getAllClips({
   }
 
   const response = await fetch(fetchURL);
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar os clipes");
+  }
+
   return await response.json();
 }
