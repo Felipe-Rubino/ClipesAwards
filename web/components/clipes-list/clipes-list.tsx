@@ -1,17 +1,12 @@
 "use client";
 import useGetAllClipes from "@/hooks/useFetchAllClipes";
 import React from "react";
-
-import {
-  UserInfo,
-  UserInfoSkeleton,
-  VideoComponent,
-} from "../clipe-item/components";
+import { UserInfoSkeleton, VotesComponent } from "../clipe-item/components";
 import { VideoComponentSkeleton } from "../clipe-item/components/video";
-
 import { ClipeItem, ClipeItemSkeleton } from "../clipe-item/clipe-item";
-import InfiniteScroll from "./components/infinite-scroll";
+import CommentsComponent from "../clipe-item/components/comments";
 import CongratulationsAlert from "./components/congratulations-alert";
+import InfiniteScroll from "./components/infinite-scroll";
 
 export function ClipesList() {
   const response = useGetAllClipes();
@@ -21,9 +16,12 @@ export function ClipesList() {
     <React.Fragment key={i}>
       {group?.data.map((clipe) => (
         <ClipeItem key={clipe.clip_id}>
-          <UserInfo user={clipe.user} posted_at={clipe.posted_at} />
-          <VideoComponent src={clipe.video_src} />
-          {/* <VotesComponent /> */}
+          <ClipeItem.User user={clipe.user} posted_at={clipe.posted_at} />
+          <ClipeItem.Video src={clipe.video_src} />
+          <ClipeItem.Actions>
+            <VotesComponent />
+            <CommentsComponent />
+          </ClipeItem.Actions>
         </ClipeItem>
       ))}
     </React.Fragment>

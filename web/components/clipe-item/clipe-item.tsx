@@ -1,5 +1,11 @@
 import { twMerge } from "tailwind-merge";
-import { UserInfoSkeleton, VideoComponentSkeleton } from "./components";
+import {
+  UserInfo,
+  UserInfoSkeleton,
+  VideoComponent,
+  VideoComponentSkeleton,
+} from "./components";
+import ActionsComponent from "./components/actions";
 
 function ClipeItem({
   children,
@@ -20,6 +26,14 @@ function ClipeItem({
     </div>
   );
 }
+
+const User = UserInfo;
+const Video = VideoComponent;
+const Actions = ActionsComponent;
+
+ClipeItem.User = User;
+ClipeItem.Video = Video;
+ClipeItem.Actions = Actions;
 
 function ClipeItemSkeleton() {
   return (
