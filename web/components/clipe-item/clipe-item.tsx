@@ -16,6 +16,7 @@ function ClipeItem({
 }>) {
   return (
     <div
+      style={{ contentVisibility: "auto" }}
       className={twMerge(
         "rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border",
         className,
