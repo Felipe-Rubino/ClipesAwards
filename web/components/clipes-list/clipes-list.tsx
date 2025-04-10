@@ -12,9 +12,13 @@ export function ClipesList() {
   const response = useGetAllClipes();
   const { data, isFetchingNextPage } = response;
 
-  const renderCLipes = data?.pages.map((group, i) => (
+  if (!data || data.pages.length === 0) {
+    return <ClipesListSkeleton />;
+  }
+
+  const renderCLipes = data?.pages?.map((group, i) => (
     <React.Fragment key={i}>
-      {group?.data.map((clipe) => (
+      {group?.data?.map((clipe) => (
         <ClipeItem key={clipe.clip_id}>
           <ClipeItem.User user={clipe.user} posted_at={clipe.posted_at} />
           <ClipeItem.Video src={clipe.video_src} />

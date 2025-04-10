@@ -16,7 +16,7 @@ export default function InfiniteScroll({
   hasNoMorePagesComponent,
   children,
 }: Props) {
-  const { fetchNextPage, status, hasNextPage } = queryResponse;
+  const { fetchNextPage, status, hasNextPage, error } = queryResponse;
   const { ref, inView } = useInView();
 
   useEffect(() => {
@@ -27,6 +27,12 @@ export default function InfiniteScroll({
 
   if (status === "pending") {
     return pendingComponent;
+  }
+
+  if (status === "error") {
+    return (
+      <p className="wrapper">{"message" in error ? error.message : error}</p>
+    );
   }
 
   return (

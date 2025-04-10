@@ -9,7 +9,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useEffect, useState } from "react";
-import ConfettiExplosion from "react-confetti-explosion";
+import ConfettiExplosion from "react-confetti-blast";
 export default function CongratulationsAlert() {
   const [isModalOpen, setModalOpen] = useState(false);
 
