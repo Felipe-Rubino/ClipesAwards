@@ -6,35 +6,49 @@ import {
   VideoComponentSkeleton,
 } from "./components";
 import ActionsComponent from "./components/actions";
+import {
+  HTMLAttributes,
+  ReactNode,
+  ForwardRefExoticComponent,
+  RefAttributes,
+  forwardRef,
+} from "react";
 
-function ClipeItem({
-  children,
-  className,
-  ...props
-}: React.PropsWithChildren<{
-  className?: string;
-}>) {
-  return (
-    <div
-      style={{ contentVisibility: "auto" }}
-      className={twMerge(
-        "rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border",
-        className,
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  );
+interface ClipeItemProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
 }
 
-const User = UserInfo;
-const Video = VideoComponent;
-const Actions = ActionsComponent;
+interface ClipeItemComponent
+  extends ForwardRefExoticComponent<
+    ClipeItemProps & RefAttributes<HTMLDivElement>
+  > {
+  User: typeof UserInfo;
+  Video: typeof VideoComponent;
+  Actions: typeof ActionsComponent;
+}
 
-ClipeItem.User = User;
-ClipeItem.Video = Video;
-ClipeItem.Actions = Actions;
+const ClipeItem = forwardRef<HTMLDivElement, ClipeItemProps>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        style={{ contentVisibility: "auto" }}
+        className={twMerge(
+          "rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  },
+) as ClipeItemComponent;
+
+ClipeItem.User = UserInfo;
+ClipeItem.Video = VideoComponent;
+ClipeItem.Actions = ActionsComponent;
+ClipeItem.displayName = "ClipeItem";
 
 function ClipeItemSkeleton() {
   return (

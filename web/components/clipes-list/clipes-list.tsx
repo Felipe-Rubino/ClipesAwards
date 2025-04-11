@@ -16,9 +16,9 @@ export function ClipesList() {
     return <ClipesListSkeleton />;
   }
 
-  const renderCLipes = data?.pages?.map((group, i) => (
-    <React.Fragment key={i}>
-      {group?.data?.map((clipe) => (
+  const renderCLipes = data.pages.map((page) => (
+    <React.Fragment key={page.nextCursor}>
+      {page.data.map((clipe) => (
         <ClipeItem key={clipe.clip_id}>
           <ClipeItem.User user={clipe.user} posted_at={clipe.posted_at} />
           <ClipeItem.Video src={clipe.video_src} />
@@ -38,6 +38,7 @@ export function ClipesList() {
       hasNoMorePagesComponent={<CongratulationsAlert />}
     >
       <section className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+        {isFetchingNextPage && <ClipeItemSkeleton />}
         {renderCLipes}
         {isFetchingNextPage && <ClipeItemSkeleton />}
       </section>

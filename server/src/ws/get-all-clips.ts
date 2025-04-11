@@ -1,89 +1,170 @@
+import { Collection, FetchMessagesOptions, Message } from "discord.js";
 import { ID_CANAL_CLIPES } from "src/constants";
+import {
+  DirectionCursor,
+  MessageWithAttachment,
+} from "src/http/routes/get-all-clips";
 import { client } from "./bot";
-import { Attachment, Message } from "discord.js";
+import {
+  filterByAttachmentType,
+  filterHasAttachments,
+  MessageFilter,
+} from "./utils/filters";
+import { getTextChannel } from "./utils/getTextChannel";
+
+export type Period = {
+  startDate: Date;
+  endDate: Date;
+};
+
+type MessageId = string;
+type MessagePage = Collection<MessageId, Message>;
 
 export async function getMessagesFromClipsChannel(
-  fetchSize: number = 9,
-  beforeMessageId?: string,
-  startDate?: Date,
-  endDate?: Date,
+  cursor: string | null,
+  fetchSize = 15,
+  direction: DirectionCursor = "forward",
+  period?: Period,
 ) {
-  const channel = client.channels.cache.get(ID_CANAL_CLIPES);
-  if (!channel || !channel.isTextBased()) {
-    throw new Error(`Text-based channel with id ${ID_CANAL_CLIPES} not found`);
+  const channel = getTextChannel(client, ID_CANAL_CLIPES);
+  const filters: MessageFilter[] = [
+    // filterByDate(startDateFilter, endDateFilter), // Filtra por data
+    filterHasAttachments, // Filtra por anexos
+    filterByAttachmentType("video/"), // Filtra por vídeos
+  ];
+
+  const fetchOptions = buildFetchOptions(cursor, direction, fetchSize);
+  const messagePage: MessagePage = await channel.messages.fetch(fetchOptions);
+  const sortedMessages = sortMessages(messagePage, direction);
+  const messages = collectValidMessages(sortedMessages, filters, fetchSize);
+  return direction == "backward" ? messages.reverse() : messages;
+}
+
+function sortMessages(
+  messagePage: MessagePage,
+  direction: DirectionCursor,
+): MessagePage {
+  if (direction == "backward") {
+    return messagePage.reverse();
   }
-  const startDateFilter: Date =
-    startDate || new Date(new Date().getFullYear(), 0, 1);
-  const endDateFilter: Date =
-    endDate || new Date(new Date().getFullYear(), 11, 31, 23, 59, 59);
+  return messagePage;
+}
 
-  const collectedMessages: any[] = [];
-  let message: Message | null | undefined = null;
+function buildFetchOptions(
+  cursor: string | null,
+  direction: DirectionCursor,
+  fetchSize: number,
+): FetchMessagesOptions {
+  const fetchOptions: FetchMessagesOptions = {
+    limit: fetchSize * 2,
+  };
 
-  if (beforeMessageId) {
-    message = await channel.messages.fetch(beforeMessageId).catch(() => null);
-  } else {
-    message = await channel.messages
-      .fetch({ limit: 1 })
-      .then((messagePage) =>
-        messagePage.size === 1 ? messagePage.at(0) : null,
-      );
-  }
-
-  if (!message) {
-    throw new Error(`No messages found in channel with id ${ID_CANAL_CLIPES}`);
-  }
-
-  const hasVideo = message.attachments.some((att: Attachment) =>
-    att.contentType?.startsWith("video/"),
-  );
-
-  if (hasVideo) {
-    message.attachments.forEach((attachment: Attachment) => {
-      const msgWithAttachment = {
-        ...message,
-        attachment,
-      };
-      collectedMessages.push(msgWithAttachment);
-    });
-  }
-
-  while (collectedMessages.length < fetchSize && message) {
-    const messagePage: any = await channel.messages.fetch({
-      limit: 100,
-      before: message.id,
-    });
-
-    for (const msg of messagePage.values()) {
-      if (collectedMessages.length >= fetchSize) break;
-
-      const createdAt = new Date(msg.createdTimestamp);
-      // const isInPeriod =
-      //   createdAt >= startDateFilter && createdAt <= endDateFilter;
-      // if (!isInPeriod || msg.attachments.size === 0) continue;
-      if (msg.attachments.size === 0) continue;
-
-      const hasVideo = msg.attachments.some((att: Attachment) =>
-        att.contentType?.startsWith("video/"),
-      );
-
-      if (hasVideo) {
-        msg.attachments.forEach((attachment: Attachment) => {
-          if (collectedMessages.length < fetchSize) {
-            collectedMessages.push({
-              ...msg,
-              attachment,
-            });
-          }
-        });
-      }
+  if (cursor) {
+    if (direction === "forward") {
+      fetchOptions.before = cursor;
     }
+    if (direction === "backward") {
+      fetchOptions.after = cursor;
+    }
+  }
 
-    message =
-      messagePage.size > 0
-        ? (messagePage.at(messagePage.size - 1) ?? null)
-        : null;
+  return fetchOptions;
+}
+
+function collectValidMessages(
+  messagePage: MessagePage,
+  filters: MessageFilter[],
+  fetchSize: number,
+): MessageWithAttachment[] {
+  const collectedMessages: MessageWithAttachment[] = [];
+  let distinctMessageCount = 0;
+
+  for (const message of messagePage.values()) {
+    if (distinctMessageCount >= fetchSize) break;
+
+    const isValidMessage = filters.every((filter) => filter(message));
+    if (!isValidMessage) continue;
+
+    distinctMessageCount++;
+
+    message.attachments.forEach((attachment) => {
+      collectedMessages.push({ message, attachment });
+    });
   }
 
   return collectedMessages;
+}
+
+export async function getCursors(
+  messages: MessageWithAttachment[],
+  direction: DirectionCursor = "forward",
+) {
+  const getCursorId = (
+    messageArray: MessageWithAttachment[],
+    position: "first" | "last",
+  ) => {
+    const message =
+      position === "first"
+        ? messageArray[0]
+        : messageArray[messageArray.length - 1];
+    return message?.message.id || null;
+  };
+
+  const getNextCursor = async (
+    messages: MessageWithAttachment[],
+    direction: DirectionCursor,
+  ): Promise<string | null> => {
+    if (!messages.length) return null;
+
+    if (direction === "backward") {
+      const lastMessageId = getCursorId(messages, "last");
+      if (!lastMessageId) return null;
+      return lastMessageId;
+    } else {
+      const lastMessageId = getCursorId(messages, "last");
+      if (!lastMessageId) return null;
+
+      const result = await getMessagesFromClipsChannel(
+        lastMessageId,
+        15,
+        "forward",
+      );
+      return result.length ? lastMessageId : null;
+    }
+  };
+
+  const getPrevCursor = async (
+    messages: MessageWithAttachment[],
+    direction: DirectionCursor,
+  ): Promise<string | null> => {
+    if (!messages.length) return null;
+
+    if (direction === "backward") {
+      const firstMessageId = getCursorId(messages, "first");
+      if (!firstMessageId) return null;
+
+      const result = await getMessagesFromClipsChannel(
+        firstMessageId,
+        15,
+        "backward",
+      );
+      return result.length ? firstMessageId : null;
+    } else {
+      const firstMessageId = getCursorId(messages, "first");
+      if (!firstMessageId) return null;
+
+      const result = await getMessagesFromClipsChannel(
+        firstMessageId,
+        15,
+        "backward",
+      );
+      return result.length ? firstMessageId : null;
+    }
+  };
+
+  const [nextCursor, prevCursor] = await Promise.all([
+    getNextCursor(messages, direction),
+    getPrevCursor(messages, direction),
+  ]);
+  return { prevCursor, nextCursor };
 }

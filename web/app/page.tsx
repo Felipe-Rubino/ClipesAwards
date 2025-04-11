@@ -6,6 +6,7 @@ import { Header } from "@/components/header/header";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { Suspense } from "react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default function Home() {
   const LINK_SERVER =
@@ -37,6 +38,7 @@ export default function Home() {
           </Suspense>
         </section>
       </main>
+      <ReactQueryDevtools initialIsOpen />
     </div>
   );
 }

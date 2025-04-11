@@ -1,6 +1,6 @@
 "use client";
 import { ClipeDTO } from "@/@types/Clipe";
-import { UseInfiniteQueryResult, InfiniteData } from "@tanstack/react-query";
+import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -16,15 +16,19 @@ export default function InfiniteScroll({
   hasNoMorePagesComponent,
   children,
 }: Props) {
-  const { fetchNextPage, hasNextPage, error, isError, isPending, isSuccess } =
+  const { fetchNextPage, hasNextPage, error, isError, isPending } =
     queryResponse;
-  const { ref, inView } = useInView();
+
+  const { ref: nextVideoRef, inView: inViewNext } = useInView({
+    threshold: 0.1,
+    rootMargin: "500px",
+  });
 
   useEffect(() => {
-    if (inView) {
+    if (inViewNext) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage]);
+  }, [inViewNext, fetchNextPage]);
 
   if (isPending) {
     return pendingComponent;
@@ -38,9 +42,10 @@ export default function InfiniteScroll({
 
   return (
     <>
+      {/* <div ref={previousVideoRef} /> */}
       {children}
       {!hasNextPage && !isError && hasNoMorePagesComponent}
-      <div ref={ref} />
+      <div ref={nextVideoRef} />
     </>
   );
 }

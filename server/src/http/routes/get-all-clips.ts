@@ -1,33 +1,41 @@
 import { Attachment, Message } from "discord.js";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { getMessagesFromClipsChannel } from "src/ws/get-all-clips";
+import { getCursors, getMessagesFromClipsChannel } from "src/ws/get-all-clips";
 
 type GetAllClipsRequest = FastifyRequest<{
-  Querystring: { cursor?: string };
+  Querystring: { cursor: string | null; direction: DirectionCursor };
 }>;
+export type MessageWithAttachment = {
+  message: Message;
+  attachment: Attachment;
+};
+export type DirectionCursor = "forward" | "backward";
 
 export async function getAllClips(app: FastifyInstance) {
   app.get("/clips", async (req: GetAllClipsRequest, res: FastifyReply) => {
     console.group("[getAllClips]");
     console.log(`[INFO] Requisição recebida`);
     try {
-      const { cursor } = req.query;
-      console.log(cursor);
+      const { cursor, direction } = req.query;
 
-      const messages = await getMessagesFromClipsChannel(9, cursor);
-      const clips = messages.map((message) => mapMessageToClips(message));
+      // const period = {
+      //   startDate: new Date(new Date().getFullYear(), 0, 1), // 01/01/2024
+      //   endDate: new Date(new Date().getFullYear(), 11, 31, 23, 59, 59), // 31/12/2025
+      // };
 
-      if (cursor && clips.length > 0 && clips[0].message_id === cursor) {
-        clips.shift();
-      }
+      const messages = await getMessagesFromClipsChannel(cursor, 15, direction);
 
-      let nextCursor = null;
-      if (clips.length > 0) {
-        nextCursor = clips[clips.length - 1].message_id;
-      }
+      const [clips, cursors] = await Promise.all([
+        messages.map(mapMessageToClips),
+        getCursors(messages, direction),
+      ]);
+
+      const { prevCursor, nextCursor } = cursors;
 
       const responseBody = {
+        prevCursor,
         nextCursor,
+        pageSize: clips.length,
         data: clips,
       };
 
@@ -44,11 +52,8 @@ export async function getAllClips(app: FastifyInstance) {
   });
 }
 
-type MessageWithAttachment = Message & {
-  attachment: Attachment;
-};
-function mapMessageToClips(message: MessageWithAttachment) {
-  const { createdTimestamp, author, attachment, id } = message;
+function mapMessageToClips({ message, attachment }: MessageWithAttachment) {
+  const { createdTimestamp, author, id } = message;
 
   return {
     clip_id: attachment.id,
