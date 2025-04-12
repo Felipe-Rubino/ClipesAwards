@@ -1,61 +1,37 @@
-import { twMerge } from "tailwind-merge";
+import { Clipe } from "@/@types/Clipe";
 import {
+  ActionsComponent,
+  CommentsComponent,
   UserInfo,
   UserInfoSkeleton,
   VideoComponent,
   VideoComponentSkeleton,
+  VotesComponent,
 } from "./components";
-import ActionsComponent from "./components/actions";
-import {
-  HTMLAttributes,
-  ReactNode,
-  ForwardRefExoticComponent,
-  RefAttributes,
-  forwardRef,
-} from "react";
 
-interface ClipeItemProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
+interface ClipeItemProps {
+  data: Clipe;
 }
 
-interface ClipeItemComponent
-  extends ForwardRefExoticComponent<
-    ClipeItemProps & RefAttributes<HTMLDivElement>
-  > {
-  User: typeof UserInfo;
-  Video: typeof VideoComponent;
-  Actions: typeof ActionsComponent;
+function ClipeItem({ data: clipe }: ClipeItemProps) {
+  return (
+    <div className="rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border">
+      <UserInfo user={clipe.user} posted_at={clipe.posted_at} />
+      <VideoComponent src={clipe.video_src} />
+      <ActionsComponent>
+        <VotesComponent />
+        <CommentsComponent />
+      </ActionsComponent>
+    </div>
+  );
 }
-
-const ClipeItem = forwardRef<HTMLDivElement, ClipeItemProps>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        style={{ contentVisibility: "auto" }}
-        className={twMerge(
-          "rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border",
-          className,
-        )}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  },
-) as ClipeItemComponent;
-
-ClipeItem.User = UserInfo;
-ClipeItem.Video = VideoComponent;
-ClipeItem.Actions = ActionsComponent;
-ClipeItem.displayName = "ClipeItem";
 
 function ClipeItemSkeleton() {
   return (
-    <ClipeItem>
+    <div className="rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border">
       <UserInfoSkeleton />
       <VideoComponentSkeleton />
-    </ClipeItem>
+    </div>
   );
 }
 

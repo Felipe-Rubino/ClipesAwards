@@ -79,14 +79,7 @@ export function ClipesList() {
         />
       )}
       {page.data.map((clipe) => (
-        <ClipeItem key={clipe.clip_id}>
-          <ClipeItem.User user={clipe.user} posted_at={clipe.posted_at} />
-          <ClipeItem.Video src={clipe.video_src} />
-          <ClipeItem.Actions>
-            <VotesComponent />
-            <CommentsComponent />
-          </ClipeItem.Actions>
-        </ClipeItem>
+        <ClipeItem key={clipe.clip_id} data={clipe} />
       ))}
       {index === data.pages.length - 1 && hasNextPage && (
         <div
