@@ -22,7 +22,7 @@ type MessagePage = Collection<MessageId, Message>;
 
 export async function getMessagesFromClipsChannel(
   cursor: string | null,
-  fetchSize = 15,
+  fetchSize = 9,
   direction: DirectionCursor = "forward",
   period?: Period,
 ) {
@@ -126,7 +126,7 @@ export async function getCursors(
 
       const result = await getMessagesFromClipsChannel(
         lastMessageId,
-        15,
+        9,
         "forward",
       );
       return result.length ? lastMessageId : null;
@@ -145,7 +145,7 @@ export async function getCursors(
 
       const result = await getMessagesFromClipsChannel(
         firstMessageId,
-        15,
+        9,
         "backward",
       );
       return result.length ? firstMessageId : null;
@@ -155,7 +155,7 @@ export async function getCursors(
 
       const result = await getMessagesFromClipsChannel(
         firstMessageId,
-        15,
+        9,
         "backward",
       );
       return result.length ? firstMessageId : null;

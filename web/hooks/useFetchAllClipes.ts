@@ -9,7 +9,7 @@ export default function useGetAllClipes() {
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? null,
     getPreviousPageParam: (firstPage) => firstPage.prevCursor ?? null,
-    maxPages: 3,
+    maxPages: 4,
     refetchOnWindowFocus: false,
     staleTime: Infinity,
   });

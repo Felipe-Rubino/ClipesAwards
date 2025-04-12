@@ -23,7 +23,7 @@ export async function getAllClips(app: FastifyInstance) {
       //   endDate: new Date(new Date().getFullYear(), 11, 31, 23, 59, 59), // 31/12/2025
       // };
 
-      const messages = await getMessagesFromClipsChannel(cursor, 15, direction);
+      const messages = await getMessagesFromClipsChannel(cursor, 9, direction);
 
       const [clips, cursors] = await Promise.all([
         messages.map(mapMessageToClips),

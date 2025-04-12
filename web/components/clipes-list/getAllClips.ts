@@ -1,6 +1,8 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
 
 export default async function getAllClips(params: QueryFunctionContext) {
+  console.log("chamou!");
+
   const direction = params.direction;
   const cursor = params.pageParam;
 
