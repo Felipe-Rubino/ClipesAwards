@@ -17,25 +17,28 @@ export async function getAllClips(app: FastifyInstance) {
     console.log(`[INFO] Requisição recebida`);
     try {
       const { cursor, direction } = req.query;
-
+      const FETCH_SIZE = 9;
       // const period = {
       //   startDate: new Date(new Date().getFullYear(), 0, 1), // 01/01/2024
       //   endDate: new Date(new Date().getFullYear(), 11, 31, 23, 59, 59), // 31/12/2025
       // };
 
-      const messages = await getMessagesFromClipsChannel(cursor, 9, direction);
+      const messages = await getMessagesFromClipsChannel(
+        cursor,
+        FETCH_SIZE,
+        direction,
+      );
 
       const [clips, cursors] = await Promise.all([
         messages.map(mapMessageToClips),
-        getCursors(messages, direction),
+        getCursors(messages, FETCH_SIZE, direction),
       ]);
 
-      const { prevCursor, nextCursor } = cursors;
+      // const { prevCursor, nextCursor } = cursors;
 
       const responseBody = {
-        prevCursor,
-        nextCursor,
-        pageSize: clips.length,
+        // prevCursor,
+        nextCursor: cursors.nextCursor,
         data: clips,
       };
 

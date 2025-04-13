@@ -97,6 +97,7 @@ function collectValidMessages(
 
 export async function getCursors(
   messages: MessageWithAttachment[],
+  fetchSize: number,
   direction: DirectionCursor = "forward",
 ) {
   const getCursorId = (
@@ -112,6 +113,7 @@ export async function getCursors(
 
   const getNextCursor = async (
     messages: MessageWithAttachment[],
+    fetchSize: number,
     direction: DirectionCursor,
   ): Promise<string | null> => {
     if (!messages.length) return null;
@@ -126,45 +128,48 @@ export async function getCursors(
 
       const result = await getMessagesFromClipsChannel(
         lastMessageId,
-        9,
+        fetchSize,
         "forward",
       );
       return result.length ? lastMessageId : null;
     }
   };
 
-  const getPrevCursor = async (
-    messages: MessageWithAttachment[],
-    direction: DirectionCursor,
-  ): Promise<string | null> => {
-    if (!messages.length) return null;
+  // const getPrevCursor = async (
+  //   messages: MessageWithAttachment[],
+  //   direction: DirectionCursor,
+  // ): Promise<string | null> => {
+  //   if (!messages.length) return null;
 
-    if (direction === "backward") {
-      const firstMessageId = getCursorId(messages, "first");
-      if (!firstMessageId) return null;
+  //   if (direction === "backward") {
+  //     const firstMessageId = getCursorId(messages, "first");
+  //     if (!firstMessageId) return null;
 
-      const result = await getMessagesFromClipsChannel(
-        firstMessageId,
-        9,
-        "backward",
-      );
-      return result.length ? firstMessageId : null;
-    } else {
-      const firstMessageId = getCursorId(messages, "first");
-      if (!firstMessageId) return null;
+  //     const result = await getMessagesFromClipsChannel(
+  //       firstMessageId,
+  //       fetchSize,
+  //       "backward",
+  //     );
+  //     return result.length ? firstMessageId : null;
+  //   } else {
+  //     const firstMessageId = getCursorId(messages, "first");
+  //     if (!firstMessageId) return null;
 
-      const result = await getMessagesFromClipsChannel(
-        firstMessageId,
-        9,
-        "backward",
-      );
-      return result.length ? firstMessageId : null;
-    }
-  };
+  //     const result = await getMessagesFromClipsChannel(
+  //       firstMessageId,
+  //       fetchSize,
+  //       "backward",
+  //     );
+  //     return result.length ? firstMessageId : null;
+  //   }
+  // };
 
-  const [nextCursor, prevCursor] = await Promise.all([
-    getNextCursor(messages, direction),
-    getPrevCursor(messages, direction),
-  ]);
-  return { prevCursor, nextCursor };
+  // const [nextCursor, prevCursor] = await Promise.all([
+  //   getNextCursor(messages, direction),
+  //   getPrevCursor(messages, direction),
+  // ]);
+
+  // return { prevCursor, nextCursor };
+  const nextCursor = await getNextCursor(messages, fetchSize, direction);
+  return { nextCursor };
 }
