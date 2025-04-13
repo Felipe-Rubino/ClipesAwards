@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Separator } from "../ui/separator";
 import packageJson from "../../package.json";
+import ModalSobreComponent from "../modal-sobre/modal";
 
 export function Header() {
   return (
@@ -35,6 +36,12 @@ export function Header() {
                 Clipes
               </NavigationMenuLink>
             </Link>
+          </NavigationMenuItem>
+
+          <NavigationMenuItem>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <ModalSobreComponent />
+            </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>

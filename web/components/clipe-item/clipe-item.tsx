@@ -1,22 +1,20 @@
-import { twMerge } from "tailwind-merge";
 import {
+  ActionsComponent,
   UserInfo,
   UserInfoSkeleton,
   VideoComponent,
   VideoComponentSkeleton,
 } from "./components";
-import ActionsComponent from "./components/actions";
+import { HTMLAttributes, ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
 
-function ClipeItem({
-  children,
-  className,
-  ...props
-}: React.PropsWithChildren<{
-  className?: string;
-}>) {
+interface ClipeItemProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
+}
+
+function ClipeItem({ children, className, ...props }: ClipeItemProps) {
   return (
     <div
-      style={{ contentVisibility: "auto" }}
       className={twMerge(
         "rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border",
         className,
@@ -28,21 +26,18 @@ function ClipeItem({
   );
 }
 
-const User = UserInfo;
-const Video = VideoComponent;
-const Actions = ActionsComponent;
-
-ClipeItem.User = User;
-ClipeItem.Video = Video;
-ClipeItem.Actions = Actions;
-
 function ClipeItemSkeleton() {
   return (
-    <ClipeItem>
+    <div className="rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border">
       <UserInfoSkeleton />
       <VideoComponentSkeleton />
-    </ClipeItem>
+    </div>
   );
 }
 
-export { ClipeItem, ClipeItemSkeleton };
+ClipeItem.User = UserInfo;
+ClipeItem.Video = VideoComponent;
+ClipeItem.Actions = ActionsComponent;
+ClipeItem.Skeleton = ClipeItemSkeleton;
+
+export default ClipeItem;
