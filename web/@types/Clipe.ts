@@ -1,5 +1,6 @@
 export type ClipeDTO = {
   nextCursor: string;
+  prevCursor: string;
   data: Clipe[];
 };
 
