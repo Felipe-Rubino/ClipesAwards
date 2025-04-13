@@ -1,27 +1,27 @@
-import { Clipe } from "@/@types/Clipe";
 import {
   ActionsComponent,
-  CommentsComponent,
   UserInfo,
   UserInfoSkeleton,
   VideoComponent,
   VideoComponentSkeleton,
-  VotesComponent,
 } from "./components";
+import { HTMLAttributes, ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
 
-interface ClipeItemProps {
-  data: Clipe;
+interface ClipeItemProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
 }
 
-function ClipeItem({ data: clipe }: ClipeItemProps) {
+function ClipeItem({ children, className, ...props }: ClipeItemProps) {
   return (
-    <div className="rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border">
-      <UserInfo user={clipe.user} posted_at={clipe.posted_at} />
-      <VideoComponent src={clipe.video_src} />
-      <ActionsComponent>
-        <VotesComponent />
-        <CommentsComponent />
-      </ActionsComponent>
+    <div
+      className={twMerge(
+        "rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border",
+        className,
+      )}
+      {...props}
+    >
+      {children}
     </div>
   );
 }
@@ -35,4 +35,9 @@ function ClipeItemSkeleton() {
   );
 }
 
-export { ClipeItem, ClipeItemSkeleton };
+ClipeItem.User = UserInfo;
+ClipeItem.Video = VideoComponent;
+ClipeItem.Actions = ActionsComponent;
+ClipeItem.Skeleton = ClipeItemSkeleton;
+
+export default ClipeItem;

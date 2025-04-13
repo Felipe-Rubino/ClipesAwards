@@ -8,8 +8,7 @@ export default function useGetAllClipes() {
     queryFn: (pageParam) => getAllClips(pageParam),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? null,
-    getPreviousPageParam: (firstPage) => firstPage.prevCursor ?? null,
-    maxPages: 4,
+    // getPreviousPageParam: (firstPage) => firstPage.prevCursor ?? null,
     refetchOnWindowFocus: false,
     staleTime: Infinity,
   });
