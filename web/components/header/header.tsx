@@ -11,13 +11,8 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Separator } from "../ui/separator";
-import { Button } from "@/components/ui/button";
 import packageJson from "../../package.json";
 import ModalSobreComponent from "../modal-sobre/modal";
-
-export function openModal() {
-  string: "aaa";
-}
 
 export function Header() {
   return (
