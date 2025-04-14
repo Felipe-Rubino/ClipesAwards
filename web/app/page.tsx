@@ -11,7 +11,7 @@ export default function Home() {
   const LINK_SERVER =
     "https://discord.com/channels/818529146635681793/1145570523330379917";
   return (
-    <div className="antialiased mx-12 py-6">
+    <div className="antialiased py-6 mx-auto" style={{ width: "94svw" }}>
       <Header />
       <main>
         <section>
